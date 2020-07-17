@@ -1,7 +1,7 @@
 package tile
 
 import (
-	common2 "github.com/tdakkota/go-terra/proto/structs/common"
+	"github.com/tdakkota/go-terra/proto/common"
 )
 
 type DisplayDoll struct {
@@ -11,33 +11,41 @@ type DisplayDoll struct {
 	Dye
 }
 
-func (d DisplayDoll) minLength() int {
-	return 1 + d.Item.minLength() + d.Dye.minLength()
+func (d DisplayDoll) Len() int {
+	return 2 + d.Item.Len() + d.Dye.Len()
 }
 
-func (d DisplayDoll) MarshalBinary() (b []byte, err error) {
-	b = make([]byte, d.minLength())
+func (d DisplayDoll) MinLength() int {
+	return 2 + d.Item.MinLength() + d.Dye.MinLength()
+}
+
+func (d DisplayDoll) Append(buf []byte) (bout []byte, err error) {
+	var b []byte
+	buf, b = common.Slice(buf, d.Len())
+	b = b[:2]
 
 	b[0] = byte(d.DollFlags1)
 	b[1] = byte(d.DollFlags2)
-	dataItem, err := d.Item.MarshalBinary()
+	b, err = d.Item.Append(b)
 	if err != nil {
 		return nil, err
 	}
-	copy(dataItem, b[2:])
 
-	dataDye, err := d.Dye.MarshalBinary()
+	b, err = d.Dye.Append(b)
 	if err != nil {
 		return nil, err
 	}
-	copy(dataDye, b[2:])
 
-	return b, nil
+	return buf, nil
+}
+
+func (d DisplayDoll) MarshalBinary() (b []byte, err error) {
+	return d.Append(make([]byte, 0, d.Len()))
 }
 
 func (d *DisplayDoll) UnmarshalBinary(b []byte) (err error) {
-	if len(b) < d.minLength() {
-		return common2.ErrInvalidLength
+	if len(b) < d.MinLength() {
+		return common.ErrInvalidLength
 	}
 
 	d.DollFlags1 = byte(b[0])
@@ -47,7 +55,7 @@ func (d *DisplayDoll) UnmarshalBinary(b []byte) (err error) {
 		return
 	}
 
-	err = d.Dye.UnmarshalBinary(b[2:])
+	err = d.Dye.UnmarshalBinary(b[7:])
 	if err != nil {
 		return
 	}

@@ -1,13 +1,12 @@
 package structs
 
 import (
+	"github.com/tdakkota/go-terra/testutil"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
-func testTile() (Tile, []byte) {
-	return Tile{
+func testTile() (testutil.Message, []byte) {
+	return &Tile{
 		Flags1:     Active,
 		Flags2:     Wire3,
 		Color:      3,
@@ -22,60 +21,9 @@ func testTile() (Tile, []byte) {
 }
 
 func TestTile(t *testing.T) {
-	tile, testData := testTile()
-
-	t.Run("marshal", func(t *testing.T) {
-		assertions := require.New(t)
-
-		data, err := tile.MarshalBinary()
-		assertions.NoError(err)
-		assertions.Equal(testData, data)
-	})
-
-	t.Run("unmarshal", func(t *testing.T) {
-		assertions := require.New(t)
-
-		tile2 := Tile{}
-		err := tile2.UnmarshalBinary(testData)
-		assertions.NoError(err)
-		assertions.Equal(tile, tile2)
-	})
-
-	t.Run("marshal-unmarshal", func(t *testing.T) {
-		assertions := require.New(t)
-
-		data, err := tile.MarshalBinary()
-		assertions.NoError(err)
-
-		tile2 := Tile{}
-		err = tile2.UnmarshalBinary(data)
-		assertions.NoError(err)
-
-		assertions.Equal(tile, tile2)
-	})
+	testutil.Create(t, testTile)
 }
 
-func BenchmarkTileMarshall(b *testing.B) {
-	b.ReportAllocs()
-	tile, _ := testTile()
-
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		_, _ = tile.MarshalBinary()
-	}
-}
-
-func BenchmarkTileUnmarshall(b *testing.B) {
-	b.ReportAllocs()
-	tile, _ := testTile()
-
-	data, err := tile.MarshalBinary()
-	if err != nil {
-		b.Fatal(err)
-	}
-
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		_ = tile.UnmarshalBinary(data)
-	}
+func BenchmarkTile(b *testing.B) {
+	testutil.Create(b, testTile)
 }

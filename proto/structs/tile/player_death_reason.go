@@ -2,7 +2,7 @@ package tile
 
 import (
 	"encoding/binary"
-	common2 "github.com/tdakkota/go-terra/proto/structs/common"
+	"github.com/tdakkota/go-terra/proto/common"
 )
 
 type DeathReason byte
@@ -51,12 +51,21 @@ type PlayerDeathReason struct {
 	DeathReason       string
 }
 
-func (p PlayerDeathReason) minLength() int {
-	return 1 + 2 + 2 + 2 + 1 + 2 + 2 + 1 + 1
+func (p PlayerDeathReason) Len() int {
+	return p.MinLength() + len(p.DeathReason)
+}
+
+func (p PlayerDeathReason) MinLength() int {
+	return 0 + 1 + 2 + 2 + 2 + 1 + 2 + 2 + 1 + 1
 }
 
 func (p PlayerDeathReason) MarshalBinary() (b []byte, err error) {
-	b = make([]byte, p.minLength())
+	return p.Append(make([]byte, 0, p.Len()))
+}
+
+func (p PlayerDeathReason) Append(buf []byte) (_ []byte, err error) {
+	var b []byte
+	buf, b = common.Slice(buf, p.Len())
 
 	b[0] = byte(p.PlayerDeathReason)
 	binary.LittleEndian.PutUint16(b[1:], uint16(p.KillersPlayerID))
@@ -66,17 +75,17 @@ func (p PlayerDeathReason) MarshalBinary() (b []byte, err error) {
 	binary.LittleEndian.PutUint16(b[8:], uint16(p.ProjectileType))
 	binary.LittleEndian.PutUint16(b[10:], uint16(p.ItemType))
 	b[12] = byte(p.ItemPrefix)
-	err = common2.WriteString(p.DeathReason, b[13:])
+	err = common.WriteString(p.DeathReason, b[13:])
 	if err != nil {
 		return nil, err
 	}
 
-	return b, nil
+	return buf, nil
 }
 
 func (p *PlayerDeathReason) UnmarshalBinary(b []byte) (err error) {
-	if len(b) < p.minLength() {
-		return common2.ErrInvalidLength
+	if len(b) < p.MinLength() {
+		return common.ErrInvalidLength
 	}
 
 	p.PlayerDeathReason = DeathReason(b[0])
@@ -87,7 +96,7 @@ func (p *PlayerDeathReason) UnmarshalBinary(b []byte) (err error) {
 	p.ProjectileType = int16(binary.LittleEndian.Uint16(b[8:]))
 	p.ItemType = int16(binary.LittleEndian.Uint16(b[10:]))
 	p.ItemPrefix = byte(b[12])
-	p.DeathReason, err = common2.ReadString(b[13:])
+	p.DeathReason, err = common.ReadString(b[13:])
 	if err != nil {
 		return
 	}

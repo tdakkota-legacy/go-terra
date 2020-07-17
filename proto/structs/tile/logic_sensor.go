@@ -1,7 +1,7 @@
 package tile
 
 import (
-	common2 "github.com/tdakkota/go-terra/proto/structs/common"
+	"github.com/tdakkota/go-terra/proto/common"
 )
 
 type LogicSensor struct {
@@ -9,26 +9,35 @@ type LogicSensor struct {
 	On             bool
 }
 
-func (l LogicSensor) minLength() int {
-	return 2
+func (l LogicSensor) Len() int {
+	return l.MinLength()
+}
+
+func (l LogicSensor) MinLength() int {
+	return 0 + 1 + 1
 }
 
 func (l LogicSensor) MarshalBinary() (b []byte, err error) {
-	b = make([]byte, l.minLength())
+	return l.Append(make([]byte, 0, l.Len()))
+}
+
+func (l LogicSensor) Append(buf []byte) (_ []byte, err error) {
+	var b []byte
+	buf, b = common.Slice(buf, l.Len())
 
 	b[0] = byte(l.LogicCheckType)
-	common2.WriteBool(l.On, b[1:])
+	common.WriteBool(l.On, b[1:])
 
-	return b, nil
+	return buf, nil
 }
 
 func (l *LogicSensor) UnmarshalBinary(b []byte) (err error) {
-	if len(b) < l.minLength() {
-		return common2.ErrInvalidLength
+	if len(b) < l.MinLength() {
+		return common.ErrInvalidLength
 	}
 
 	l.LogicCheckType = byte(b[0])
-	l.On = common2.ReadBool(b[1:])
+	l.On = common.ReadBool(b[1:])
 
 	return nil
 }
