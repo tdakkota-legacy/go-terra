@@ -2,7 +2,7 @@ package structs
 
 import (
 	"encoding/binary"
-	common2 "github.com/tdakkota/go-terra/proto/structs/common"
+	"github.com/tdakkota/go-terra/proto/common"
 )
 
 type Sign struct {
@@ -12,33 +12,43 @@ type Sign struct {
 	SignText string
 }
 
-func (c Sign) minLength() int {
+func (s Sign) Len() int {
+	return s.MinLength() + len(s.SignText)
+}
+
+func (s Sign) MinLength() int {
 	return 3*2 + 1 // Index(2) + X(2) + Y(2) + Len(1)
 }
 
-func (c Sign) MarshalBinary() ([]byte, error) {
-	b := make([]byte, c.minLength()+len(c.SignText))
+func (s Sign) Append(buf []byte) ([]byte, error) {
+	var b []byte
+	buf, b = common.Slice(buf, s.Len())
 
-	binary.LittleEndian.PutUint16(b[0:], uint16(c.Index))
-	binary.LittleEndian.PutUint16(b[2:], uint16(c.X))
-	binary.LittleEndian.PutUint16(b[4:], uint16(c.Y))
-	err := common2.WriteStringRange(c.SignText, b[6:], 1, common2.MaxStringLength)
+	binary.LittleEndian.PutUint16(b[0:], uint16(s.Index))
+	binary.LittleEndian.PutUint16(b[2:], uint16(s.X))
+	binary.LittleEndian.PutUint16(b[4:], uint16(s.Y))
+
+	err := common.WriteStringRange(s.SignText, b[6:], 1, common.MaxStringLength)
 	if err != nil {
 		return nil, err
 	}
 
-	return b, nil
+	return buf, nil
 }
 
-func (c *Sign) UnmarshalBinary(b []byte) (err error) {
-	if len(b) < c.minLength() {
-		return common2.ErrInvalidLength
+func (s Sign) MarshalBinary() ([]byte, error) {
+	return s.Append(make([]byte, 0, s.Len()))
+}
+
+func (s *Sign) UnmarshalBinary(b []byte) (err error) {
+	if len(b) < s.MinLength() {
+		return common.ErrInvalidLength
 	}
 
-	c.Index = int16(binary.LittleEndian.Uint16(b[0:]))
-	c.X = int16(binary.LittleEndian.Uint16(b[2:]))
-	c.Y = int16(binary.LittleEndian.Uint16(b[4:]))
-	c.SignText, err = common2.ReadStringRange(b[6:], 1, common2.MaxStringLength)
+	s.Index = int16(binary.LittleEndian.Uint16(b[0:]))
+	s.X = int16(binary.LittleEndian.Uint16(b[2:]))
+	s.Y = int16(binary.LittleEndian.Uint16(b[4:]))
+	s.SignText, err = common.ReadStringRange(b[6:], 1, common.MaxStringLength)
 	if err != nil {
 		return
 	}

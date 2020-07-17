@@ -2,7 +2,7 @@ package structs
 
 import (
 	"encoding/binary"
-	common2 "github.com/tdakkota/go-terra/proto/structs/common"
+	"github.com/tdakkota/go-terra/proto/common"
 )
 
 type Chest struct {
@@ -12,33 +12,42 @@ type Chest struct {
 	Name  string
 }
 
-func (c Chest) minLength() int {
+func (c Chest) Len() int {
+	return c.MinLength() + len(c.Name)
+}
+
+func (c Chest) MinLength() int {
 	return 3*2 + 1 // Index(2) + X(2) + Y(2) + Len(1)
 }
 
-func (c Chest) MarshalBinary() ([]byte, error) {
-	b := make([]byte, c.minLength()+len(c.Name))
+func (c Chest) Append(buf []byte) ([]byte, error) {
+	var b []byte
+	buf, b = common.Slice(buf, c.Len())
 
 	binary.LittleEndian.PutUint16(b[0:], uint16(c.Index))
 	binary.LittleEndian.PutUint16(b[2:], uint16(c.X))
 	binary.LittleEndian.PutUint16(b[4:], uint16(c.Y))
-	err := common2.WriteStringRange(c.Name, b[6:], 1, 20)
+	err := common.WriteStringRange(c.Name, b[6:], 1, 20)
 	if err != nil {
 		return nil, err
 	}
 
-	return b, nil
+	return buf, nil
+}
+
+func (c Chest) MarshalBinary() ([]byte, error) {
+	return c.Append(make([]byte, 0, c.Len()))
 }
 
 func (c *Chest) UnmarshalBinary(b []byte) (err error) {
-	if len(b) < c.minLength() {
-		return common2.ErrInvalidLength
+	if len(b) < c.MinLength() {
+		return common.ErrInvalidLength
 	}
 
 	c.Index = int16(binary.LittleEndian.Uint16(b[0:]))
 	c.X = int16(binary.LittleEndian.Uint16(b[2:]))
 	c.Y = int16(binary.LittleEndian.Uint16(b[4:]))
-	c.Name, err = common2.ReadStringRange(b[6:], 1, 20)
+	c.Name, err = common.ReadStringRange(b[6:], 1, 20)
 	if err != nil {
 		return
 	}

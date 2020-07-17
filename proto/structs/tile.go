@@ -2,7 +2,7 @@ package structs
 
 import (
 	"encoding/binary"
-	common2 "github.com/tdakkota/go-terra/proto/structs/common"
+	"github.com/tdakkota/go-terra/proto/common"
 )
 
 type TileFlags1 byte
@@ -44,7 +44,11 @@ type Tile struct {
 	LiquidType LiquidType
 }
 
-func (c Tile) minLength() int {
+func (t Tile) Len() int {
+	return t.MinLength()
+}
+
+func (t Tile) MinLength() int {
 	const flags = 2 * 1                                         // Flags1,Flags2
 	const colors = 2 * 1                                        // Color,WallColor
 	const _type = 2                                             // Type
@@ -54,32 +58,37 @@ func (c Tile) minLength() int {
 	return flags + colors + _type + frameCoords + wall + liquid // Total
 }
 
-func (c Tile) MarshalBinary() ([]byte, error) {
-	b := make([]byte, c.minLength())
+func (t Tile) Append(buf []byte) ([]byte, error) {
+	var b []byte
+	buf, b = common.Slice(buf, t.Len())
 
-	b[0], b[1] = byte(c.Flags1), byte(c.Flags2)
-	b[2], b[3] = c.Color, c.WallColor
-	binary.LittleEndian.PutUint16(b[4:], c.Type)
-	binary.LittleEndian.PutUint16(b[6:], uint16(c.FrameX))
-	binary.LittleEndian.PutUint16(b[8:], uint16(c.FrameY))
-	binary.LittleEndian.PutUint16(b[10:], c.Wall)
-	b[12], b[13] = c.Liquid, byte(c.LiquidType)
+	b[0], b[1] = byte(t.Flags1), byte(t.Flags2)
+	b[2], b[3] = t.Color, t.WallColor
+	binary.LittleEndian.PutUint16(b[4:], t.Type)
+	binary.LittleEndian.PutUint16(b[6:], uint16(t.FrameX))
+	binary.LittleEndian.PutUint16(b[8:], uint16(t.FrameY))
+	binary.LittleEndian.PutUint16(b[10:], t.Wall)
+	b[12], b[13] = t.Liquid, byte(t.LiquidType)
 
 	return b, nil
 }
 
-func (c *Tile) UnmarshalBinary(b []byte) (err error) {
-	if len(b) < c.minLength() {
-		return common2.ErrInvalidLength
+func (t Tile) MarshalBinary() ([]byte, error) {
+	return t.Append(make([]byte, 0, t.Len()))
+}
+
+func (t *Tile) UnmarshalBinary(b []byte) (err error) {
+	if len(b) < t.MinLength() {
+		return common.ErrInvalidLength
 	}
 
-	c.Flags1, c.Flags2 = TileFlags1(b[0]), TileFlags2(b[1])
-	c.Color, c.WallColor = b[2], b[3]
-	c.Type = binary.LittleEndian.Uint16(b[4:])
-	c.FrameX = int16(binary.LittleEndian.Uint16(b[6:]))
-	c.FrameY = int16(binary.LittleEndian.Uint16(b[8:]))
-	c.Wall = binary.LittleEndian.Uint16(b[10:])
-	c.Liquid, c.LiquidType = b[12], LiquidType(b[13])
+	t.Flags1, t.Flags2 = TileFlags1(b[0]), TileFlags2(b[1])
+	t.Color, t.WallColor = b[2], b[3]
+	t.Type = binary.LittleEndian.Uint16(b[4:])
+	t.FrameX = int16(binary.LittleEndian.Uint16(b[6:]))
+	t.FrameY = int16(binary.LittleEndian.Uint16(b[8:]))
+	t.Wall = binary.LittleEndian.Uint16(b[10:])
+	t.Liquid, t.LiquidType = b[12], LiquidType(b[13])
 
 	return nil
 }
