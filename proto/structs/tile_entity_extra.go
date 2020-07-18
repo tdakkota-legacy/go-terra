@@ -1,5 +1,7 @@
 package structs
 
+import "encoding"
+
 type TileEntityType byte
 
 const (
@@ -14,5 +16,7 @@ const (
 )
 
 type TileEntityExtraData interface {
-	Type() TileEntityType
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	Len() int
 }

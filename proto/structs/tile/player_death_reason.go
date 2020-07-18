@@ -5,7 +5,7 @@ import (
 	"github.com/tdakkota/go-terra/proto/common"
 )
 
-type DeathReason byte
+type DeathReason common.ByteBitFlag
 
 const (
 	KilledViaPvP DeathReason = 1 << iota
@@ -52,11 +52,11 @@ type PlayerDeathReason struct {
 }
 
 func (p PlayerDeathReason) Len() int {
-	return p.MinLength() + len(p.DeathReason)
+	return p.MinLength() + 2 + 2 + 2 + 1 + 2 + 2 + 1 + 1 + len(p.DeathReason)
 }
 
 func (p PlayerDeathReason) MinLength() int {
-	return 0 + 1 + 2 + 2 + 2 + 1 + 2 + 2 + 1 + 1
+	return 0 + 1
 }
 
 func (p PlayerDeathReason) MarshalBinary() (b []byte, err error) {
@@ -66,39 +66,96 @@ func (p PlayerDeathReason) MarshalBinary() (b []byte, err error) {
 func (p PlayerDeathReason) Append(buf []byte) (_ []byte, err error) {
 	var b []byte
 	buf, b = common.Slice(buf, p.Len())
+	cursor := 0
 
-	b[0] = byte(p.PlayerDeathReason)
-	binary.LittleEndian.PutUint16(b[1:], uint16(p.KillersPlayerID))
-	binary.LittleEndian.PutUint16(b[3:], uint16(p.KillingNPCsIndex))
-	binary.LittleEndian.PutUint16(b[5:], uint16(p.ProjectileIndex))
-	b[7] = byte(p.TypeOfDeath)
-	binary.LittleEndian.PutUint16(b[8:], uint16(p.ProjectileType))
-	binary.LittleEndian.PutUint16(b[10:], uint16(p.ItemType))
-	b[12] = byte(p.ItemPrefix)
-	err = common.WriteString(p.DeathReason, b[13:])
-	if err != nil {
-		return nil, err
+	b[cursor] = byte(p.PlayerDeathReason)
+	cursor++
+
+	flags := common.ByteBitFlag(p.PlayerDeathReason)
+	if flags.Has(common.ByteBitFlag(KilledViaPvP)) {
+		binary.LittleEndian.PutUint16(b[cursor:], uint16(p.KillersPlayerID))
+		cursor += 2
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaNPC)) {
+		binary.LittleEndian.PutUint16(b[cursor:], uint16(p.KillingNPCsIndex))
+		cursor += 2
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaProjectile)) {
+		binary.LittleEndian.PutUint16(b[cursor:], uint16(p.ProjectileIndex))
+		cursor += 2
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaOther)) {
+		b[cursor] = byte(p.TypeOfDeath)
+		cursor++
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaProjectile2)) {
+		binary.LittleEndian.PutUint16(b[cursor:], uint16(p.ProjectileType))
+		cursor += 2
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaPvP2)) {
+		binary.LittleEndian.PutUint16(b[cursor:], uint16(p.ItemType))
+		cursor += 2
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaPvP3)) {
+		b[cursor] = byte(p.ItemPrefix)
+		cursor += 2
 	}
 
-	return buf, nil
+	if flags.Has(common.ByteBitFlag(KilledViaCustomModification)) {
+		err = common.WriteString(p.DeathReason, b[cursor:])
+		if err != nil {
+			return nil, err
+		}
+		cursor += 1 + len(p.DeathReason)
+	}
+
+	return buf[:cursor], nil
 }
 
 func (p *PlayerDeathReason) UnmarshalBinary(b []byte) (err error) {
 	if len(b) < p.MinLength() {
 		return common.ErrInvalidLength
 	}
+	cursor := 0
 
-	p.PlayerDeathReason = DeathReason(b[0])
-	p.KillersPlayerID = int16(binary.LittleEndian.Uint16(b[1:]))
-	p.KillingNPCsIndex = int16(binary.LittleEndian.Uint16(b[3:]))
-	p.ProjectileIndex = int16(binary.LittleEndian.Uint16(b[5:]))
-	p.TypeOfDeath = DeathType(b[7])
-	p.ProjectileType = int16(binary.LittleEndian.Uint16(b[8:]))
-	p.ItemType = int16(binary.LittleEndian.Uint16(b[10:]))
-	p.ItemPrefix = byte(b[12])
-	p.DeathReason, err = common.ReadString(b[13:])
-	if err != nil {
-		return
+	p.PlayerDeathReason = DeathReason(b[cursor])
+	cursor++
+
+	flags := common.ByteBitFlag(p.PlayerDeathReason)
+	if flags.Has(common.ByteBitFlag(KilledViaPvP)) {
+		p.KillersPlayerID = int16(binary.LittleEndian.Uint16(b[cursor:]))
+		cursor += 2
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaNPC)) {
+		p.KillingNPCsIndex = int16(binary.LittleEndian.Uint16(b[cursor:]))
+		cursor += 2
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaProjectile)) {
+		p.ProjectileIndex = int16(binary.LittleEndian.Uint16(b[cursor:]))
+		cursor += 2
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaOther)) {
+		p.TypeOfDeath = DeathType(b[cursor])
+		cursor++
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaProjectile2)) {
+		p.ProjectileType = int16(binary.LittleEndian.Uint16(b[cursor:]))
+		cursor += 2
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaPvP2)) {
+		p.ItemType = int16(binary.LittleEndian.Uint16(b[cursor:]))
+		cursor += 2
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaPvP3)) {
+		p.ItemPrefix = byte(b[cursor])
+		cursor += 2
+	}
+	if flags.Has(common.ByteBitFlag(KilledViaCustomModification)) {
+		p.DeathReason, err = common.ReadString(b[cursor:])
+		if err != nil {
+			return err
+		}
+		cursor += 1 + len(p.DeathReason)
 	}
 
 	return nil

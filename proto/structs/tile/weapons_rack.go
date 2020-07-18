@@ -1,3 +1,5 @@
 package tile
 
-type WeaponsRack Item
+type WeaponsRack struct {
+	Item
+}

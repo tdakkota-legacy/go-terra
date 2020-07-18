@@ -5,7 +5,7 @@ import (
 	"github.com/tdakkota/go-terra/proto/common"
 )
 
-type TileFlags1 byte
+type TileFlags1 common.ByteBitFlag
 
 const (
 	Active TileFlags1 = 1 << iota
@@ -18,7 +18,7 @@ const (
 	Inactive
 )
 
-type TileFlags2 byte
+type TileFlags2 common.ByteBitFlag
 
 const (
 	Wire2 TileFlags2 = 1 << iota

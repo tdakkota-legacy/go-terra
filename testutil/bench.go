@@ -1,8 +1,6 @@
 package testutil
 
 import (
-	"fmt"
-	"reflect"
 	"testing"
 )
 
@@ -10,7 +8,7 @@ func BenchSerialize(b *testing.B, constructor func(zero bool) Message, testData 
 	b.Helper()
 
 	m := constructor(false)
-	b.Run(fmt.Sprintf("Marshal%s", reflect.TypeOf(m).Name()), func(b *testing.B) {
+	b.Run("Marshal", func(b *testing.B) {
 		b.ReportAllocs()
 
 		b.ResetTimer()
@@ -20,7 +18,7 @@ func BenchSerialize(b *testing.B, constructor func(zero bool) Message, testData 
 		}
 	})
 
-	b.Run(fmt.Sprintf("Unmarshal%s", reflect.TypeOf(m).Name()), func(b *testing.B) {
+	b.Run("Unmarshal", func(b *testing.B) {
 		b.ReportAllocs()
 
 		data, err := m.MarshalBinary()

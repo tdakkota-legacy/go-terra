@@ -1,3 +1,5 @@
 package tile
 
-type FoodPlatter Item
+type FoodPlatter struct {
+	Item
+}

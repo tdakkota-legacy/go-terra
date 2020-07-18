@@ -1,3 +1,5 @@
 package tile
 
-type ItemFrame Item
+type ItemFrame struct {
+	Item
+}
