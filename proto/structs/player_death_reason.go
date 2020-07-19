@@ -1,4 +1,4 @@
-package tile
+package structs
 
 import (
 	"encoding/binary"

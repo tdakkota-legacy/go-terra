@@ -1,4 +1,4 @@
-package tile
+package structs
 
 import (
 	"github.com/tdakkota/go-terra/testutil"
