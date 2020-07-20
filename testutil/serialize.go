@@ -44,6 +44,15 @@ func TestSerialize(t *testing.T, constructor func(zero bool) Message, testData [
 		assertions.Equal(testData, data)
 	})
 
+	t.Run("append-not-enough", func(t *testing.T) {
+		assertions := require.New(t)
+		buf := make([]byte, 0, 1)
+
+		data, err := m.Append(buf)
+		assertions.NoError(err)
+		assertions.Equal(testData, data)
+	})
+
 	t.Run("unmarshal", func(t *testing.T) {
 		assertions := require.New(t)
 
