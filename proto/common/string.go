@@ -15,11 +15,9 @@ func ReadString(b []byte) (string, error) {
 
 func ReadStringRange(b []byte, min, max int) (string, error) {
 	length := int(b[0])
-	switch length {
-	case 0:
+
+	if length == 0 {
 		return "", nil
-	case 1:
-		return string(b[1]), nil
 	}
 
 	if len(b)-1 < length {
@@ -35,6 +33,11 @@ func ReadStringRange(b []byte, min, max int) (string, error) {
 
 func WriteStringRange(s string, b []byte, min, max int) error {
 	length := len(s)
+
+	if len(b) < length+1 { // buffer should be one byte + len(s)
+		return ErrInvalidLength
+	}
+
 	if length > math.MaxUint8 {
 		return ErrStringTooLong
 	}

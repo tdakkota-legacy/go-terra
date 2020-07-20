@@ -13,11 +13,9 @@ func ReadBytes(b []byte) ([]byte, error) {
 
 func ReadBytesRange(b []byte, min, max int) ([]byte, error) {
 	length := int(b[0])
-	switch length {
-	case 0:
+
+	if length == 0 {
 		return []byte{}, nil
-	case 1:
-		return []byte{b[1]}, nil
 	}
 
 	if len(b)-1 < length {
@@ -33,6 +31,11 @@ func ReadBytesRange(b []byte, min, max int) ([]byte, error) {
 
 func WriteBytesRange(s []byte, b []byte, min, max int) error {
 	length := len(s)
+
+	if len(b) < length+1 { // buffer should be one byte + len(s)
+		return ErrInvalidLength
+	}
+
 	if length > math.MaxUint8 {
 		return ErrStringTooLong
 	}
