@@ -1,6 +1,8 @@
 package structs
 
-import "github.com/tdakkota/go-terra/proto/common"
+import (
+	"github.com/tdakkota/go-terra/proto/common"
+)
 
 type NetworkTextMode byte
 
@@ -38,6 +40,22 @@ func (n NetworkText) Append(buf []byte) (_ []byte, err error) {
 		return nil, err
 	}
 
+	if n.Mode != Literal {
+		buf, b = common.Slice(buf, n.Len()+1)
+		cursor := n.Len() + 1
+
+		b[0] = byte(len(n.SubstitutionList))
+		for _, e := range n.SubstitutionList {
+			newB, err := e.MarshalBinary()
+			if err != nil {
+				return nil, err
+			}
+
+			buf = append(buf[:cursor], newB...)
+			cursor += len(newB)
+		}
+	}
+
 	return buf, nil
 }
 
@@ -50,6 +68,28 @@ func (n *NetworkText) UnmarshalBinary(b []byte) (err error) {
 	n.Text, err = common.ReadString(b[1:])
 	if err != nil {
 		return
+	}
+
+	if n.Mode != Literal {
+		if len(b) < n.MinLength()+1 {
+			return common.ErrInvalidLength
+		}
+
+		cursor := n.Len()
+		length := int(b[cursor])
+		cursor++
+		for i := 0; i < length; i++ {
+			e := NetworkText{}
+			err := e.UnmarshalBinary(b[cursor:])
+			if err != nil {
+				return err
+			}
+
+			if e.Mode != Literal {
+				cursor++
+			}
+			cursor += e.Len()
+		}
 	}
 
 	return nil
