@@ -3,6 +3,7 @@ package testutil
 import (
 	"encoding"
 	"github.com/stretchr/testify/require"
+	"reflect"
 	"testing"
 )
 
@@ -13,11 +14,31 @@ type Message interface {
 	Append([]byte) ([]byte, error)
 }
 
+func reset(p interface{}) interface{} {
+	var isPtr bool
+	v := reflect.ValueOf(p)
+	for v.Kind() == reflect.Ptr {
+		isPtr = true
+		v = v.Elem()
+	}
+	if isPtr {
+		return reflect.New(v.Type()).Interface()
+	}
+
+	return reflect.Zero(v.Type()).Interface()
+}
+
 func Create(t testing.TB, f func() (Message, []byte)) {
+	t.Helper()
 	testM, testData := f()
 
 	TestAll(t, func(zero bool) (m Message) {
-		return testM
+		if zero {
+			m = reset(testM).(Message)
+		} else {
+			m = testM
+		}
+		return
 	}, testData)
 }
 

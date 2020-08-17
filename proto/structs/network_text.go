@@ -19,10 +19,19 @@ type NetworkText struct {
 }
 
 func (n NetworkText) Len() int {
-	return n.MinLength() + len(n.Text)
+	base := n.MinLength() + len(n.Text)
+	if n.Mode != Literal {
+		for _, e := range n.SubstitutionList {
+			base += e.Len()
+		}
+	}
+	return base
 }
 
 func (n NetworkText) MinLength() int {
+	if n.Mode != Literal {
+		return 0 + 1 + 1 + 1
+	}
 	return 0 + 1 + 1
 }
 
@@ -33,18 +42,19 @@ func (n NetworkText) MarshalBinary() (b []byte, err error) {
 func (n NetworkText) Append(buf []byte) (_ []byte, err error) {
 	var b []byte
 	buf, b = common.Slice(buf, n.Len())
+	cursor := 0
 
 	b[0] = byte(n.Mode)
+	cursor++
 	err = common.WriteString(n.Text, b[1:])
 	if err != nil {
 		return nil, err
 	}
+	cursor += 1 + len(n.Text)
 
 	if n.Mode != Literal {
-		buf, b = common.Slice(buf, n.Len()+1)
-		cursor := n.Len() + 1
-
-		b[0] = byte(len(n.SubstitutionList))
+		b[cursor] = byte(len(n.SubstitutionList))
+		cursor++
 		for _, e := range n.SubstitutionList {
 			newB, err := e.MarshalBinary()
 			if err != nil {
@@ -71,24 +81,25 @@ func (n *NetworkText) UnmarshalBinary(b []byte) (err error) {
 	}
 
 	if n.Mode != Literal {
-		if len(b) < n.MinLength()+1 {
+		if len(b) < n.MinLength() {
 			return common.ErrInvalidLength
 		}
 
-		cursor := n.Len()
+		cursor := n.Len() - 1
 		length := int(b[cursor])
 		cursor++
+
+		n.SubstitutionList = make([]NetworkText, 0, length)
 		for i := 0; i < length; i++ {
 			e := NetworkText{}
+
 			err := e.UnmarshalBinary(b[cursor:])
 			if err != nil {
 				return err
 			}
 
-			if e.Mode != Literal {
-				cursor++
-			}
 			cursor += e.Len()
+			n.SubstitutionList = append(n.SubstitutionList, e)
 		}
 	}
 

@@ -13,8 +13,8 @@ type Context struct {
 	Marshal, Unmarshal, Common *bytes.Buffer
 }
 
-func NewContext(name string) Context {
-	c := Context{
+func NewContext(name string) *Context {
+	c := &Context{
 		Name:      name,
 		Marshal:   new(bytes.Buffer),
 		Unmarshal: new(bytes.Buffer),
@@ -46,26 +46,36 @@ func (c Context) FormatLenFunction(name, retur string) {
 	c.Common.WriteString("}\n\n")
 }
 
-func (c *Context) IncrementSize(name, typ string) {
+func typeSize(name, typ string) (int, string) {
 	switch typ {
 	case "int8", "uint8", "byte":
-		c.Counter++
-		c.MinLength += "+1"
+		return 1, "+1"
 	case "int16", "uint16":
-		c.Counter += 2
-		c.MinLength += "+2"
+		return 2, "+2"
 	case "int32", "uint32":
-		c.Counter += 4
-		c.MinLength += "+4"
+		return 4, "+4"
 	case "int64", "uint64":
-		c.Counter += 8
-		c.MinLength += "+8"
+		return 8, "+8"
 	case "float32":
-		c.Counter += 4
-		c.MinLength += "+4"
+		return 4, "+4"
 	case "bool":
-		c.Counter += 1
-		c.MinLength += "+1"
+		return 1, "+1"
+	}
+
+	return 0, ""
+}
+
+func (c *Context) IncrementSize(name, typ string) {
+	switch typ {
+	case "int8", "uint8", "byte",
+		"int16", "uint16",
+		"int32", "uint32",
+		"int64", "uint64",
+		"float32",
+		"bool":
+		inc, lengthInc := typeSize(name, typ)
+		c.Counter += inc
+		c.MinLength += lengthInc
 	case "string":
 		c.Counter += 1
 		c.MinLength += "+1"

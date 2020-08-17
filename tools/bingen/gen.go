@@ -70,34 +70,37 @@ func runDir() error {
 				continue
 			}
 
-			if decl, ok := file.Decls[0].(*ast.GenDecl); ok {
-				if len(decl.Specs) < 1 {
-					fmt.Println("invalid file: declaration should have a spec", file.Name.Name)
-					continue
-				}
+			for _, genDecl := range file.Decls {
+				if decl, ok := genDecl.(*ast.GenDecl); ok {
+					if len(decl.Specs) < 1 {
+						fmt.Println("invalid file: declaration should have a spec", file.Name.Name)
+						continue
+					}
 
-				typ, ok := decl.Specs[0].(*ast.TypeSpec)
-				if !ok {
-					fmt.Println("invalid file: spec should be type spec", file.Name.Name)
-					continue
-				}
+					typ, ok := decl.Specs[0].(*ast.TypeSpec)
+					if !ok {
+						fmt.Printf("invalid file: spec should be type spec %T: %[1]v \n", decl.Specs[0])
+						continue
+					}
 
-				w, err := os.Create(filepath.Join("./gen/", PascalToSnake(typ.Name.Name)+".go"))
-				if err != nil {
-					return err
-				}
+					w, err := os.Create(filepath.Join("./gen/", PascalToSnake(typ.Name.Name)+".go"))
+					if err != nil {
+						return err
+					}
 
-				err = printer.Fprint(w, fset, file)
-				if err != nil {
-					return err
-				}
-				io.WriteString(w, "\n")
+					err = printer.Fprint(w, fset, file)
+					if err != nil {
+						return err
+					}
+					io.WriteString(w, "\n")
 
-				err = runFile(w, typ)
-				if err != nil {
-					return err
+					err = runFile(w, typ)
+					if err != nil {
+						return err
+					}
 				}
 			}
+
 		}
 	}
 

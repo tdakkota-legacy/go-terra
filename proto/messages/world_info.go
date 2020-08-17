@@ -14,7 +14,7 @@ type WorldInfo struct {
 	WorldID                     int32
 	WorldName                   string
 	GameMode                    byte
-	WorldUniqueID               []byte
+	WorldUniqueID               [16]byte
 	WorldGeneratorVersion       uint64
 	MoonType                    byte
 	TreeBackground              byte

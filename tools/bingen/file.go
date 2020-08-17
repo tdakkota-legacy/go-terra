@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/ast"
 	"io"
+	"strconv"
 )
 
 func ifErrNotNil(w io.StringWriter, retur string) {
@@ -12,7 +13,7 @@ func ifErrNotNil(w io.StringWriter, retur string) {
 	w.WriteString("\t}\n")
 }
 
-func identLine(context Context, name string, ident *ast.Ident) error {
+func identLine(context *Context, name string, ident *ast.Ident) error {
 	typ := ident.Name
 
 	switch typ {
@@ -56,6 +57,37 @@ func identLine(context Context, name string, ident *ast.Ident) error {
 		ifErrNotNil(context.Unmarshal, "")
 	}
 	context.IncrementSize(name, typ)
+
+	return nil
+}
+
+func arrayLine(context *Context, name string, array *ast.ArrayType) (err error) {
+	ident, ok := array.Elt.(*ast.Ident)
+	if !ok {
+		return nil
+	}
+
+	size := -1
+	if lit, ok := array.Len.(*ast.BasicLit); ok {
+		size, err = strconv.Atoi(lit.Value)
+		if err != nil {
+			return err
+		}
+	}
+	typ := ident.Name
+
+	switch typ {
+	case "uint8", "byte":
+		if size == -1 {
+			context.Marshal.WriteString(fmt.Sprintf("err = common.WriteBytes(%c.%s, b[%d:])\n", context.Letter, name, context.Counter))
+			ifErrNotNil(context.Marshal, "nil, err")
+
+			context.Unmarshal.WriteString(fmt.Sprintf("%c.%s, err = common.ReadBytes(b[%d:])\n", context.Letter, name, context.Counter))
+			ifErrNotNil(context.Unmarshal, "")
+		} else {
+
+		}
+	}
 
 	return nil
 }
