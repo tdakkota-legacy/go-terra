@@ -2,9 +2,10 @@ package testutil
 
 import (
 	"encoding"
-	"github.com/stretchr/testify/require"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 type Message interface {
