@@ -1,6 +1,7 @@
 package messages
 
 // Server -> Client
+//procm:use=derive_binary
 type WorldInfo struct {
 	Time                        int32
 	DayandMoonInfo              byte

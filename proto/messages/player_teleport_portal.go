@@ -1,6 +1,7 @@
 package messages
 
 // Server <-> Client
+//procm:use=derive_binary
 type PlayerTeleportPortal struct {
 	PlayerID         byte
 	PortalColorIndex int16

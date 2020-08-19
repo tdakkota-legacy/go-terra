@@ -1,7 +1,10 @@
 package structs
 
-import "encoding"
+import (
+	"github.com/tdakkota/cursor"
+)
 
+//procm:use=derive_binary
 type TileEntityType byte
 
 const (
@@ -15,8 +18,8 @@ const (
 	TeleportationPylon
 )
 
+//procm:use=derive_binary
 type TileEntityExtraData interface {
-	encoding.BinaryMarshaler
-	encoding.BinaryUnmarshaler
-	Len() int
+	cursor.Scanner
+	cursor.Appender
 }

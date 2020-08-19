@@ -3,6 +3,7 @@ package messages
 import "github.com/tdakkota/go-terra/proto/structs"
 
 // Server <-> Client (Sync)
+//procm:use=derive_binary
 type PlayerInfo struct {
 	PlayerID        byte
 	SkinVarient     byte

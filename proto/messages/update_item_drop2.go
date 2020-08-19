@@ -1,6 +1,9 @@
 package messages
 
+type UpdateItemDrop = UpdateItemDrop2
+
 // Server <-> Client (Sync)
+//procm:use=derive_binary
 type UpdateItemDrop2 struct {
 	ItemID    int16
 	PositionX float32

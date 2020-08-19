@@ -1,6 +1,7 @@
 package messages
 
 // Server <-> Client (Sync)
+//procm:use=derive_binary
 type ModifyTile struct {
 	Action byte
 	TileX  int16
