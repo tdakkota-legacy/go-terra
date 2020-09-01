@@ -1,6 +1,8 @@
 package messages
 
-import "github.com/tdakkota/go-terra/proto/structs"
+import (
+	"github.com/tdakkota/go-terra/proto/structs"
+)
 
 // Server -> Client
 //procm:use=derive_binary

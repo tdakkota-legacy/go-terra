@@ -4,145 +4,145 @@ package proto
 type Tag byte
 
 const (
-	ConnectRequest                           Tag = 1
-	Disconnect                                   = 2
-	SetUserSlot                                  = 3
-	PlayerInfo                                   = 4
-	PlayerInventorySlot                          = 5
-	RequestWorldData                             = 6
-	WorldInfo                                    = 7
-	RequestEssentialTiles                        = 8
-	Status                                       = 9
-	SendSection                                  = 10
-	SectionTileFrame                             = 11
-	SpawnPlayer                                  = 12
-	UpdatePlayer                                 = 13
-	PlayerActive                                 = 14
-	Null                                         = 15
-	PlayerHP                                     = 16
-	ModifyTile                                   = 17
-	Time                                         = 18
-	DoorToggle                                   = 19
-	SendTileSquare                               = 20
-	UpdateItemDrop                               = 21
-	UpdateItemOwner                              = 22
-	NPCUpdate                                    = 23
-	StrikeNPCwithHeldItem                        = 24
-	Null2                                        = 25
-	Null3                                        = 26
-	ProjectileUpdate                             = 27
-	NPCStrike                                    = 28
-	DestroyProjectile                            = 29
-	TogglePVP                                    = 30
-	OpenChest                                    = 31
-	UpdateChestItem                              = 32
-	SyncActiveChest                              = 33
-	PlaceChest                                   = 34
-	HealEffect                                   = 35
-	PlayerZone                                   = 36
-	RequestPassword                              = 37
-	SendPassword                                 = 38
-	RemoveItemOwner                              = 39
-	SetActiveNPC                                 = 40
-	PlayerItemAnimation                          = 41
-	PlayerMana                                   = 42
-	ManaEffect                                   = 43
-	Null4                                        = 44
-	PlayerTeam                                   = 45
-	RequestSign                                  = 46
-	UpdateSign                                   = 47
-	SetLiquid                                    = 48
-	CompleteConnectionAndSpawn                   = 49
-	UpdatePlayerBuff                             = 50
-	SpecialNPCEffect                             = 51
-	Unlock                                       = 52
-	AddNPCBuff                                   = 53
-	UpdateNPCBuff                                = 54
-	AddPlayerBuff                                = 55
-	UpdateNPCName                                = 56
-	UpdateGoodEvil                               = 57
-	PlayMusicItem                                = 58
-	HitSwitch                                    = 59
-	NPCHomeUpdate                                = 60
-	SpawnBossInvasion                            = 61
-	PlayerDodge                                  = 62
-	PaintTile                                    = 63
-	PaintWall                                    = 64
-	PlayerNPCTeleport                            = 65
-	HealOtherPlayer                              = 66
-	Placeholder                                  = 67
-	ClientUUID                                   = 68
-	GetChestName                                 = 69
-	CatchNPC                                     = 70
-	ReleaseNPC                                   = 71
-	TravellingMerchantInventory                  = 72
-	TeleportationPotion                          = 73
-	AnglerQuest                                  = 74
-	CompleteAnglerQuestToday                     = 75
-	NumberOfAnglerQuestsCompleted                = 76
-	CreateTemporaryAnimation                     = 77
-	ReportInvasionProgress                       = 78
-	PlaceObject                                  = 79
-	SyncPlayerChestIndex                         = 80
-	CreateCombatText                             = 81
-	LoadNetModule                                = 82
-	SetNPCKillCount                              = 83
-	SetPlayerStealth                             = 84
-	ForceItemIntoNearestChest                    = 85
-	UpdateTileEntity                             = 86
-	PlaceTileEntity                              = 87
-	TweakItem                                    = 88
-	PlaceItemFrame                               = 89
-	UpdateItemDrop2                              = 90
-	SyncEmoteBubble                              = 91
-	SyncExtraValue                               = 92
-	SocialHandshake                              = 93
-	Deprecated                                   = 94
-	KillPortal                                   = 95
-	PlayerTeleportPortal                         = 96
-	NotifyPlayerNPCKilled                        = 97
-	NotifyPlayerOfEvent                          = 98
-	UpdateMinionTarget                           = 99
-	NPCTeleportPortal                            = 100
-	UpdateShieldStrengths                        = 101
-	NebulaLevelUp                                = 102
-	MoonLordCountdown                            = 103
-	NPCShopItem                                  = 104
-	GemLockToggle                                = 105
-	PoofofSmoke                                  = 106
-	SmartTextMessage                             = 107
-	WiredCannonShot                              = 108
-	MassWireOperation                            = 109
-	MassWireOperationConsume                     = 110
-	ToggleBirthdayParty                          = 111
-	GrowFX                                       = 112
-	CrystalInvasionStart                         = 113
-	CrystalInvasionWipeAll                       = 114
-	MinionAttackTargetUpdate                     = 115
-	CrystalInvasionSendWaitTime                  = 116
-	PlayerHurtV2                                 = 117
-	PlayerDeathV2                                = 118
-	CombatTextString                             = 119
-	Emoji                                        = 120
-	TEDisplayDollItemSync                        = 121
-	RequestTileEntityInteraction                 = 122
-	WeaponsRackTryPlacing                        = 123
-	TEHatRackItemSync                            = 124
-	SyncTilePicking                              = 125
-	SyncRevengeMarker                            = 126
-	RemoveRevengeMarker                          = 127
-	LandGolfBallInCup                            = 128
-	FinishedConnectingToServer                   = 129
-	FishOutNPC                                   = 130
-	TamperWithNPC                                = 131
-	PlayLegacySound                              = 132
-	FoodPlatterTryPlacing                        = 133
-	UpdatePlayerLuckFactors                      = 134
-	DeadPlayer                                   = 135
-	SyncCavernMonsterType                        = 136
-	RequestNPCBuffRemoval                        = 137
-	ClientFinishedInventoryChangesOnThisTick     = 138
-	SetCountsAsHostForGameplay                   = 139
+	ConnectRequest Tag = iota + 1
+	Disconnect
+	SetUserSlot
+	PlayerInfo
+	PlayerInventorySlot
+	RequestWorldData
+	WorldInfo
+	RequestEssentialTiles
+	Status
+	SendSection
+	SectionTileFrame
+	SpawnPlayer
+	UpdatePlayer
+	PlayerActive
+	Null
+	PlayerHP
+	ModifyTile
+	Time
+	DoorToggle
+	SendTileSquare
+	UpdateItemDrop
+	UpdateItemOwner
+	NPCUpdate
+	StrikeNPCwithHeldItem
+	Null2
+	Null3
+	ProjectileUpdate
+	NPCStrike
+	DestroyProjectile
+	TogglePVP
+	OpenChest
+	UpdateChestItem
+	SyncActiveChest
+	PlaceChest
+	HealEffect
+	PlayerZone
+	RequestPassword
+	SendPassword
+	RemoveItemOwner
+	SetActiveNPC
+	PlayerItemAnimation
+	PlayerMana
+	ManaEffect
+	Null4
+	PlayerTeam
+	RequestSign
+	UpdateSign
+	SetLiquid
+	CompleteConnectionAndSpawn
+	UpdatePlayerBuff
+	SpecialNPCEffect
+	Unlock
+	AddNPCBuff
+	UpdateNPCBuff
+	AddPlayerBuff
+	UpdateNPCName
+	UpdateGoodEvil
+	PlayMusicItem
+	HitSwitch
+	NPCHomeUpdate
+	SpawnBossInvasion
+	PlayerDodge
+	PaintTile
+	PaintWall
+	PlayerNPCTeleport
+	HealOtherPlayer
+	Placeholder
+	ClientUUID
+	GetChestName
+	CatchNPC
+	ReleaseNPC
+	TravellingMerchantInventory
+	TeleportationPotion
+	AnglerQuest
+	CompleteAnglerQuestToday
+	NumberOfAnglerQuestsCompleted
+	CreateTemporaryAnimation
+	ReportInvasionProgress
+	PlaceObject
+	SyncPlayerChestIndex
+	CreateCombatText
+	LoadNetModule
+	SetNPCKillCount
+	SetPlayerStealth
+	ForceItemIntoNearestChest
+	UpdateTileEntity
+	PlaceTileEntity
+	TweakItem
+	PlaceItemFrame
+	UpdateItemDrop2
+	SyncEmoteBubble
+	SyncExtraValue
+	SocialHandshake
+	Deprecated
+	KillPortal
+	PlayerTeleportPortal
+	NotifyPlayerNPCKilled
+	NotifyPlayerOfEvent
+	UpdateMinionTarget
+	NPCTeleportPortal
+	UpdateShieldStrengths
+	NebulaLevelUp
+	MoonLordCountdown
+	NPCShopItem
+	GemLockToggle
+	PoofofSmoke
+	SmartTextMessage
+	WiredCannonShot
+	MassWireOperation
+	MassWireOperationConsume
+	ToggleBirthdayParty
+	GrowFX
+	CrystalInvasionStart
+	CrystalInvasionWipeAll
+	MinionAttackTargetUpdate
+	CrystalInvasionSendWaitTime
+	PlayerHurtV2
+	PlayerDeathV2
+	CombatTextString
+	Emoji
+	TEDisplayDollItemSync
+	RequestTileEntityInteraction
+	WeaponsRackTryPlacing
+	TEHatRackItemSync
+	SyncTilePicking
+	SyncRevengeMarker
+	RemoveRevengeMarker
+	LandGolfBallInCup
+	FinishedConnectingToServer
+	FishOutNPC
+	TamperWithNPC
+	PlayLegacySound
+	FoodPlatterTryPlacing
+	UpdatePlayerLuckFactors
+	DeadPlayer
+	SyncCavernMonsterType
+	RequestNPCBuffRemoval
+	ClientFinishedInventoryChangesOnThisTick
+	SetCountsAsHostForGameplay
 )
 
 func (t Tag) String() string {
