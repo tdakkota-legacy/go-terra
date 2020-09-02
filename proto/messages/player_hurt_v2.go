@@ -3,6 +3,7 @@ package messages
 import "github.com/tdakkota/go-terra/proto/structs"
 
 // Client -> Server
+//procm:use=derive_binary
 type PlayerHurtV2 struct {
 	PlayerID          byte
 	PlayerDeathReason structs.PlayerDeathReason

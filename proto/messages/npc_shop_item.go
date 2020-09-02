@@ -1,6 +1,7 @@
 package messages
 
 // Server -> Client
+//procm:use=derive_binary
 type NPCShopItem struct {
 	Slot     byte
 	ItemType int16

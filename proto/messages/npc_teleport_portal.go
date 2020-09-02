@@ -1,6 +1,7 @@
 package messages
 
 // Server <-> Client
+//procm:use=derive_binary
 type NPCTeleportPortal struct {
 	NPCID            uint16
 	PortalColorIndex int16

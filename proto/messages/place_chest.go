@@ -1,6 +1,7 @@
 package messages
 
 // Server <-> Client
+//procm:use=derive_binary
 type PlaceChest struct {
 	Action           byte
 	TileX            int16

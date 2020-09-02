@@ -1,6 +1,7 @@
 package messages
 
 // Server <-> Client (Sync)
+//procm:use=derive_binary
 type PlayerInventorySlot struct {
 	PlayerID  byte
 	SlotID    int16

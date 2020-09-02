@@ -1,6 +1,7 @@
 package messages
 
 // Server -> Client
+//procm:use=derive_binary
 type SyncRevengeMarker struct {
 	UniqueID          int32
 	X                 float32

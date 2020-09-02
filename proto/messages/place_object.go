@@ -1,6 +1,7 @@
 package messages
 
 // Server <-> Client
+//procm:use=derive_binary
 type PlaceObject struct {
 	X         int16
 	Y         int16

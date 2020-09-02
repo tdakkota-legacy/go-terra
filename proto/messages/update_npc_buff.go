@@ -1,6 +1,7 @@
 package messages
 
 // Server -> Client
+//procm:use=derive_binary
 type UpdateNPCBuff struct {
 	NPCID   int16
 	BuffID1 uint16

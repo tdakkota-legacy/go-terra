@@ -1,6 +1,7 @@
 package messages
 
 // Client <-> Server
+//procm:use=derive_binary
 type LandGolfBallInCup struct {
 	PlayerID     byte
 	X            uint16
