@@ -3,25 +3,25 @@ package messages
 type TweakItemFlags1 byte
 
 const (
-	TweakItemFlags1Color        TweakItemFlags1 = 1
-	TweakItemFlags1Damage                       = 2
-	TweakItemFlags1Knockback                    = 4
-	TweakItemFlags1UseAnimation                 = 8
-	TweakItemFlags1UseTime                      = 16
-	TweakItemFlags1Shoot                        = 32
-	TweakItemFlags1ShootSpeed                   = 64
-	TweakItemFlags1NextFlags                    = 128
+	TweakItemFlags1Color TweakItemFlags1 = 1 << iota
+	TweakItemFlags1Damage
+	TweakItemFlags1Knockback
+	TweakItemFlags1UseAnimation
+	TweakItemFlags1UseTime
+	TweakItemFlags1Shoot
+	TweakItemFlags1ShootSpeed
+	TweakItemFlags1NextFlags
 )
 
 type TweakItemFlags2 byte
 
 const (
-	TweakItemFlags2Width   = 1
-	TweakItemFlags2Height  = 2
-	TweakItemFlags2Scale   = 4
-	TweakItemFlags2Ammo    = 8
-	TweakItemFlags2UseAmmo = 16
-	TweakItemFlags2NotAmmo = 32
+	TweakItemFlags2Width TweakItemFlags2 = 1 << iota
+	TweakItemFlags2Height
+	TweakItemFlags2Scale
+	TweakItemFlags2Ammo
+	TweakItemFlags2UseAmmo
+	TweakItemFlags2NotAmmo
 )
 
 // Server -> Client

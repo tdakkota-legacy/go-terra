@@ -3,22 +3,22 @@ package messages
 type NPCUpdateNpcFlags1 byte
 
 const (
-	NPCUpdateNpcFlags1Direction       NPCUpdateNpcFlags1 = 1
-	NPCUpdateNpcFlags1DirectionY                         = 2
-	NPCUpdateNpcFlags1AI0                                = 4
-	NPCUpdateNpcFlags1AI1                                = 8
-	NPCUpdateNpcFlags1AI2                                = 16
-	NPCUpdateNpcFlags1AI3                                = 32
-	NPCUpdateNpcFlags1SpriteDirection                    = 64
-	NPCUpdateNpcFlags1LifeMax                            = 128
+	NPCUpdateNpcFlags1Direction NPCUpdateNpcFlags1 = 1 << iota
+	NPCUpdateNpcFlags1DirectionY
+	NPCUpdateNpcFlags1AI0
+	NPCUpdateNpcFlags1AI1
+	NPCUpdateNpcFlags1AI2
+	NPCUpdateNpcFlags1AI3
+	NPCUpdateNpcFlags1SpriteDirection
+	NPCUpdateNpcFlags1LifeMax
 )
 
 type NPCUpdateNpcFlags2 byte
 
 const (
-	NPCUpdateNpcFlags2StatsScaled        NPCUpdateNpcFlags2 = 1
-	NPCUpdateNpcFlags2SpawnedFromStatue                     = 2
-	NPCUpdateNpcFlags2StrengthMultiplier                    = 4
+	NPCUpdateNpcFlags2StatsScaled NPCUpdateNpcFlags2 = 1 << iota
+	NPCUpdateNpcFlags2SpawnedFromStatue
+	NPCUpdateNpcFlags2StrengthMultiplier
 )
 
 // Server -> Client

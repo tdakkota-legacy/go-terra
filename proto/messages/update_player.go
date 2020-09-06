@@ -3,37 +3,37 @@ package messages
 type UpdatePlayerControl byte
 
 const (
-	UpdatePlayerControlControlUp      UpdatePlayerControl = 1
-	UpdatePlayerControlControlDown                        = 2
-	UpdatePlayerControlControlLeft                        = 4
-	UpdatePlayerControlControlRight                       = 8
-	UpdatePlayerControlControlJump                        = 16
-	UpdatePlayerControlControlUseItem                     = 32
-	UpdatePlayerControlDirection                          = 64
+	UpdatePlayerControlControlUp UpdatePlayerControl = 1 << iota
+	UpdatePlayerControlControlDown
+	UpdatePlayerControlControlLeft
+	UpdatePlayerControlControlRight
+	UpdatePlayerControlControlJump
+	UpdatePlayerControlControlUseItem
+	UpdatePlayerControlDirection
 )
 
 type UpdatePlayerPulley byte
 
 const (
-	UpdatePlayerPulleyPulleyEnabled       UpdatePlayerPulley = 1
-	UpdatePlayerPulleyDirection                              = 2
-	UpdatePlayerPulleyUpdateVelocity                         = 4
-	UpdatePlayerPulleyVortexStealthActive                    = 8
-	UpdatePlayerPulleyGravityDirection                       = 16
-	UpdatePlayerPulleyShieldRaised                           = 32
+	UpdatePlayerPulleyPulleyEnabled UpdatePlayerPulley = 1 << iota
+	UpdatePlayerPulleyDirection
+	UpdatePlayerPulleyUpdateVelocity
+	UpdatePlayerPulleyVortexStealthActive
+	UpdatePlayerPulleyGravityDirection
+	UpdatePlayerPulleyShieldRaised
 )
 
 type UpdatePlayerMisc byte
 
 const (
-	UpdatePlayerMiscHoveringUp           UpdatePlayerMisc = 1
-	UpdatePlayerMiscVoidVaultEnabled                      = 2
-	UpdatePlayerMiscSitting                               = 4
-	UpdatePlayerMiscDownedDD2Event                        = 8
-	UpdatePlayerMiscIsPettingAnimal                       = 16
-	UpdatePlayerMiscIsPettingSmallAnimal                  = 32
-	UpdatePlayerMiscUsedPotionofReturn                    = 64
-	UpdatePlayerMiscHoveringDown                          = 128
+	UpdatePlayerMiscHoveringUp UpdatePlayerMisc = 1 << iota
+	UpdatePlayerMiscVoidVaultEnabled
+	UpdatePlayerMiscSitting
+	UpdatePlayerMiscDownedDD2Event
+	UpdatePlayerMiscIsPettingAnimal
+	UpdatePlayerMiscIsPettingSmallAnimal
+	UpdatePlayerMiscUsedPotionofReturn
+	UpdatePlayerMiscHoveringDown
 )
 
 type UpdatePlayerSleepingInfo byte
